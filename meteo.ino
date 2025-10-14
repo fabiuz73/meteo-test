@@ -57,10 +57,10 @@ String weather_description;
   const char degree_symbol[] = "\u00B0F";
 #endif
 
-#define SCREEN_WIDTH 240
-#define SCREEN_HEIGHT 320
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
 
-#define DRAW_BUF_SIZE (SCREEN_WIDTH * SCREEN_HEIGHT / 10 * (LV_COLOR_DEPTH / 8))
+#define DRAW_BUF_SIZE (SCREEN_WIDTH * SCREEN_HEIGHT / 5 * (LV_COLOR_DEPTH / 8))
 uint32_t draw_buf[DRAW_BUF_SIZE / 4];
 
 // If logging is enabled, it will inform the user about what is happening in the library
@@ -102,41 +102,41 @@ void lv_create_main_gui(void) {
   get_weather_data();
 
   weather_image = lv_image_create(lv_screen_active());
-  lv_obj_align(weather_image, LV_ALIGN_CENTER, -80, -20);
+  lv_obj_align(weather_image, LV_ALIGN_LEFT_MID, 30, -10);
   
   get_weather_description(weather_code);
 
   text_label_date = lv_label_create(lv_screen_active());
   lv_label_set_text(text_label_date, current_date.c_str());
-  lv_obj_align(text_label_date, LV_ALIGN_CENTER, 70, -70);
+  lv_obj_align(text_label_date, LV_ALIGN_TOP_RIGHT, -10, 20);
   lv_obj_set_style_text_font((lv_obj_t*) text_label_date, &lv_font_montserrat_26, 0);
   lv_obj_set_style_text_color((lv_obj_t*) text_label_date, lv_palette_main(LV_PALETTE_TEAL), 0);
 
   lv_obj_t * weather_image_temperature = lv_image_create(lv_screen_active());
   lv_image_set_src(weather_image_temperature, &image_weather_temperature);
-  lv_obj_align(weather_image_temperature, LV_ALIGN_CENTER, 30, -25);
+  lv_obj_align(weather_image_temperature, LV_ALIGN_TOP_RIGHT, -120, 60);
   text_label_temperature = lv_label_create(lv_screen_active());
   lv_label_set_text(text_label_temperature, String("      " + temperature + degree_symbol).c_str());
-  lv_obj_align(text_label_temperature, LV_ALIGN_CENTER, 70, -25);
+  lv_obj_align(text_label_temperature, LV_ALIGN_TOP_RIGHT, -10, 60);
   lv_obj_set_style_text_font((lv_obj_t*) text_label_temperature, &lv_font_montserrat_22, 0);
 
   lv_obj_t * weather_image_humidity = lv_image_create(lv_screen_active());
   lv_image_set_src(weather_image_humidity, &image_weather_humidity);
-  lv_obj_align(weather_image_humidity, LV_ALIGN_CENTER, 30, 20);
+  lv_obj_align(weather_image_humidity, LV_ALIGN_TOP_RIGHT, -120, 95);
   text_label_humidity = lv_label_create(lv_screen_active());
   lv_label_set_text(text_label_humidity, String("   " + humidity + "%").c_str());
-  lv_obj_align(text_label_humidity, LV_ALIGN_CENTER, 70, 20);
+  lv_obj_align(text_label_humidity, LV_ALIGN_TOP_RIGHT, -10, 95);
   lv_obj_set_style_text_font((lv_obj_t*) text_label_humidity, &lv_font_montserrat_22, 0);
 
   text_label_weather_description = lv_label_create(lv_screen_active());
   lv_label_set_text(text_label_weather_description, weather_description.c_str());
-  lv_obj_align(text_label_weather_description, LV_ALIGN_BOTTOM_MID, 0, -40);
+  lv_obj_align(text_label_weather_description, LV_ALIGN_BOTTOM_MID, 0, -30);
   lv_obj_set_style_text_font((lv_obj_t*) text_label_weather_description, &lv_font_montserrat_18, 0);
 
   // Create a text label for the time and timezone aligned center in the bottom of the screen
   text_label_time_location = lv_label_create(lv_screen_active());
   lv_label_set_text(text_label_time_location, String("Last Update: " + last_weather_update + "  |  " + location).c_str());
-  lv_obj_align(text_label_time_location, LV_ALIGN_BOTTOM_MID, 0, -10);
+  lv_obj_align(text_label_time_location, LV_ALIGN_BOTTOM_MID, 0, -5);
   lv_obj_set_style_text_font((lv_obj_t*) text_label_time_location, &lv_font_montserrat_12, 0);
   lv_obj_set_style_text_color((lv_obj_t*) text_label_time_location, lv_palette_main(LV_PALETTE_GREY), 0);
 
@@ -356,14 +356,14 @@ void setup() {
   lv_display_t * disp;
   // Initialize the TFT display using the TFT_eSPI library
   disp = lv_tft_espi_create(SCREEN_WIDTH, SCREEN_HEIGHT, draw_buf, sizeof(draw_buf));
-  lv_display_set_rotation(disp, LV_DISPLAY_ROTATION_270);
+  lv_display_set_rotation(disp, LV_DISPLAY_ROTATION_0);
   
   // Function to draw the GUI
   lv_create_main_gui();
 }
 
 void loop() {
-  lv_task_handler();  // let the GUI do its work
-  lv_tick_inc(5);     // tell LVGL how much time has passed
-  delay(5);           // let this time pass
+  lv_timer_handler();  // let the GUI do its work
+  lv_tick_inc(5);      // tell LVGL how much time has passed
+  delay(5);            // let this time pass
 }
